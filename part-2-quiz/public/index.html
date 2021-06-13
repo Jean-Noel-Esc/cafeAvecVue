@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./style.css" />
     <title>Cafe with a view</title>
   </head>
   <body>
@@ -21,6 +21,41 @@
       ou avec un goûter réconfortant. Mais attention, vous verrez qu'il est
       difficile de s'arrêter.
     </p>
+
+    <section class="menu">
+        <h2>Menu</h2>
+        <div v-for="item in simpleMenu" :key="item.name" class="menu-item">
+          <img
+            class="menu-item__image"
+            :src="item.image.source"
+            :alt="item.image.alt"
+          />
+          <div>
+            <h3>{{ item.name }}</h3>
+            <p v-if="item.inStock">En stock</p>
+            <p v-else>En rupture de stock</p>
+            <div>
+              <label for="add-item-quantity"
+                >Quantité : {{ item.quantity }}</label
+              >
+              <input
+                v-model.number="item.quantity"
+                id="add-item-quantity"
+                type="number"
+              />
+              <button @click="addToShoppingCart(item.quantity)">
+                Ajouter au panier
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="shopping-cart">
+        <h2>Panier d'achat : {{ shoppingCart }} articles</h2>
+        console.log(shoppingCart),
+      </aside>
+
     <h2>Contactez nous</h2>
     <p>Adresse : {{ address }}</p>
     <p>Téléphone : {{ phone }}</p>
@@ -42,9 +77,41 @@
       el: "#app",
       data: {
           address: "18 avenue du Beurre, Paris, France",
-					email: "hello@cafewithavue.bakery",
-					phone: "01 88 88 88 88",
-					restaurantName: "La belle vue",
+          email: "hello@cafewithavue.bakery",
+          phone: "01 88 88 88 88",
+          restaurantName: "La belle vue",
+          shoppingCart: 0,
+          simpleMenu: [
+            {
+              name: "Croissant",
+              image: {
+                source: "./images/croissant.jpg",
+                alt: "Un croissant"
+              },
+              inStock: true,
+              quantity: 1
+            },
+            {
+              name: "Baguette de pain",
+              image: {
+                source: "./images/french-baguette.jpeg",
+                alt: "Quatre baguettes de pain"
+              },
+              inStock: true,
+              quantity: 1
+            },
+            {
+              name: "Éclair",
+              image: {
+                source: "./images/eclair.jpg",
+                alt: "Éclair au chocolat"
+              },
+              inStock: false,
+              quantity: 1
+            }
+          ]
+
+
       },
       computed: {
 					copyright() {
@@ -52,8 +119,12 @@
 
 						return `Copyright ${this.restaurantName} ${currentYear}`
 					}
-				}
-
+				},
+      methods: {
+          addToShoppingCart(amount) {
+            this.shoppingCart += amount
+          }
+        }
     })
   </script>
   </body>
